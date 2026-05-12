@@ -3,23 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tripp</title>
+  <title>Playing — Tripp</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
-  <style>
-    /* landing-only status cards layout */
-    .hero-wrap {
-      width: 100%;
-      max-width: 820px;
-    }
-    .status-cards {
-      width: 100%;
-    }
-  </style>
 </head>
-<body data-page="home">
+<body data-page="games">
 
   <div id="cursor" aria-hidden="true"></div>
   <div id="scroll-progress" aria-hidden="true"></div>
@@ -33,18 +23,26 @@
     </div>
   </nav>
 
-  <section id="hero">
-    <div class="hero-content hero-wrap">
-      <p class="hero-eyebrow">PERSONAL DASHBOARD</p>
-      <h1 class="hero-name" id="hero-name"></h1>
-      <p class="hero-tagline" id="hero-tagline"></p>
-      <p class="hero-bio"    id="hero-bio"></p>
+  <header class="page-hero">
+    <div class="page-inner">
+      <h1 class="page-title">PLAYING<span class="blink">_</span></h1>
+      <p class="page-meta" id="page-meta"></p>
+    </div>
+  </header>
 
-      <div class="status-cards" id="status-cards">
-        <!-- populated by JS -->
+  <main>
+    <div class="page-inner">
+      <div class="section-block">
+        <p class="section-label">Active</p>
+        <div class="card-grid" id="grid-playing"></div>
+      </div>
+
+      <div class="section-block" id="block-other" style="display:none">
+        <p class="section-label">Everything Else</p>
+        <div class="card-grid" id="grid-other"></div>
       </div>
     </div>
-  </section>
+  </main>
 
   <footer>
     <div class="footer-inner">
