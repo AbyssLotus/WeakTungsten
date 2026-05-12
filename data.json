@@ -12,7 +12,7 @@
       "progress": 2,
       "rating": null,
       "genre": "Sci-Fi",
-      "notes": null,
+      "notes": "Cool book, cant find it tho...",
       "spineColor": "#4a2a10",
       "textColor": "#ffd4a0"
     },
@@ -22,8 +22,8 @@
       "status": "reading",
       "progress": 10,
       "rating": null,
-      "genre": "Cyberpunk",
-      "notes": null,
+      "genre": "CyberPunk",
+      "notes": "Very brightly colored book.",
       "spineColor": "#2ce111",
       "textColor": "#0d0d0d"
     }
@@ -48,15 +48,23 @@
     {
       "name": "SeaWeed League",
       "description": "A fake collegiate sports league. Two universities built so far — Shrimple (Drexel parody) and LIT (MIT parody). Full dashboards, auth, and campus pages.",
-      "tech": ["HTML", "CSS", "JavaScript"],
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ],
       "url": null,
       "repo": null,
       "status": "active"
     },
     {
       "name": "Personal Dashboard",
-      "description": "This site. A solarpunk cyberpunk dashboard tracking what I'm reading, playing, and building. Hand-edited JSON, zero dependencies.",
-      "tech": ["HTML", "CSS", "JavaScript"],
+      "description": "This site. A Y2K pastel cyberpunk dashboard tracking what I'm reading, playing, and building. Hand-edited JSON, zero dependencies.",
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ],
       "url": null,
       "repo": null,
       "status": "active"
