@@ -9,7 +9,7 @@
       "title": "Dune",
       "author": "Frank Herbert",
       "status": "reading",
-      "progress": 3,
+      "progress": 2,
       "rating": null,
       "spineColor": "#4a2a10",
       "textColor": "#ffd4a0"
@@ -20,52 +20,24 @@
       "status": "reading",
       "progress": 10,
       "rating": null,
-      "spineColor": "#101a3a",
-      "textColor": "#a0b4ff"
+      "spineColor": "#2ce111",
+      "textColor": "#0d0d0d"
     }
   ],
   "games": [
-    {
-      "title": "Elden Ring",
-      "platform": "PC",
-      "status": "dropped",
-      "hours": 59,
-      "notes": "Just was not for me"
-    },
-    {
-      "title": "Hollow Knight",
-      "platform": "PC",
-      "status": "paused",
-      "hours": 8,
-      "notes": "want to play but not by myself."
-    },
-    {
-      "title": "Baldur's Gate 3",
-      "platform": "PC",
-      "status": "playing",
-      "hours": 71,
-      "notes": "Peak RPG. No notes."
-    },
     {
       "title": "Star Citizen",
       "platform": "PC",
       "status": "playing",
       "hours": 150,
-      "notes": "IronClad..."
+      "notes": "IronClad"
     },
     {
       "title": "Destiny 2",
       "platform": "PC",
       "status": "dropped",
-      "hours": 728,
-      "notes": "that's 728 hours on PC alone. that does not include my multiple completions of the red war campaign and year 1/2 DLCs on PS4."
-    },
-    {
-      "title": "Risk Of Rain",
-      "platform": "PC",
-      "status": "playing",
-      "hours": 45.6,
-      "notes": "Very Rainy"
+      "hours": 758,
+      "notes": "was good. no longer (this is only my PC hours)"
     }
   ],
   "projects": [
@@ -88,18 +60,6 @@
         "HTML",
         "CSS",
         "JavaScript"
-      ],
-      "url": null,
-      "repo": null,
-      "status": "active"
-    },
-    {
-      "name": "Yggy D&D world",
-      "description": "A homebrew D&D 5e world built in Obsidian, documenting the Yggdrasil setting across 25 nations, 11 playable species, and a growing archive of historical events. Campaigns are run as drop-in sessions with living canon — completed campaigns permanently shape the world for every game that follows.",
-      "tech": [
-        "English",
-        "MarkDown",
-        "Obsidian"
       ],
       "url": null,
       "repo": null,
