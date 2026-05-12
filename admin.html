@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0a0908;
+      --surface: #141210;
+      --surface2:#1c1a17;
+      --border:  rgba(200,40,30,0.15);
+      --red:     #cc2820;
+      --green:   #5aaa6a;
+      --orange:  #c87830;
+      --text:    #e2d8c8;
+      --muted:   #7a6e60;
+      --dim:     #46403a;
+      --t: 0.2s ease;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      cursor: default;
+      min-height: 100vh;
+    }
+
+    /* ── Login ── */
+    #screen-login {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .login-box {
+      width: 100%;
+      max-width: 360px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2.5rem 2rem;
+      background: var(--surface);
+    }
+    .login-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+    }
+    .login-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      margin-bottom: 1.75rem;
+    }
+    .login-error {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--red);
+      margin-bottom: 0.75rem;
+      min-height: 1.2em;
+    }
+
+    /* ── Admin shell ── */
+    #screen-admin { display: none; min-height: 100vh; }
+
+    .admin-top {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,9,8,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      flex-wrap: wrap;
+    }
+    .admin-logo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      color: var(--red);
+      margin-right: auto;
+    }
+    .admin-top .inp {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 4px;
+      padding: 0.4rem 0.7rem;
+      width: 280px;
+    }
+    .admin-top .inp::placeholder { color: var(--dim); }
+    .admin-top .inp:focus { outline: none; border-color: rgba(200,40,30,0.4); }
+
+    #save-status {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.06em;
+    }
+    #save-status.ok  { color: var(--green); }
+    #save-status.err { color: var(--red); }
+
+    /* ── Tabs ── */
+    .tab-bar {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      background: var(--surface);
+    }
+    .tab-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 0.9rem 1.25rem;
+      cursor: pointer;
+      transition: color var(--t), border-color var(--t);
+    }
+    .tab-btn.active,
+    .tab-btn:hover { color: var(--red); }
+    .tab-btn.active { border-bottom-color: var(--red); }
+
+    /* ── Tab panels ── */
+    .tab-panel { display: none; padding: 2rem 1.5rem; max-width: 900px; }
+    .tab-panel.active { display: block; }
+
+    /* ── Add button ── */
+    .btn-add {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--red);
+      background: rgba(200,40,30,0.08);
+      border: 1px solid rgba(200,40,30,0.25);
+      border-radius: 4px;
+      padding: 0.45rem 1rem;
+      cursor: pointer;
+      transition: background var(--t);
+      margin-bottom: 1.5rem;
+    }
+    .btn-add:hover { background: rgba(200,40,30,0.15); }
+
+    /* ── Item list ── */
+    .item-list { display: flex; flex-direction: column; gap: 1px; }
+    .item-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 0.75rem 1rem;
+      transition: border-color var(--t);
+    }
+    .item-row:hover { border-color: rgba(200,40,30,0.2); }
+    .item-info { flex: 1; min-width: 0; }
+    .item-title {
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .item-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--muted);
+      margin-top: 0.1rem;
+    }
+    .item-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      border: 1px solid currentColor;
+      flex-shrink: 0;
+    }
+    .badge-reading, .badge-playing, .badge-active { color: var(--green); }
+    .badge-finished, .badge-completed            { color: #9ab060; }
+    .badge-paused                                { color: var(--orange); }
+    .badge-dropped                               { color: var(--red); }
+
+    .btn-icon {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.25rem 0.55rem;
+      cursor: pointer;
+      transition: color var(--t), border-color var(--t);
+      flex-shrink: 0;
+    }
+    .btn-icon:hover { color: var(--red); border-color: rgba(200,40,30,0.3); }
+    .btn-icon.delete:hover { color: var(--red); }
+
+    /* ── Inline form ── */
+    .item-form {
+      background: var(--surface2);
+      border: 1px solid rgba(200,40,30,0.2);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .form-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .form-field label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* shared input style */
+    .inp, input[type=text], input[type=number], input[type=password],
+    input[type=url], select, textarea {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 4px;
+      padding: 0.45rem 0.65rem;
+      width: 100%;
+      transition: border-color var(--t);
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: rgba(200,40,30,0.45);
+    }
+    input::placeholder, textarea::placeholder { color: var(--dim); }
+    select option { background: var(--surface2); }
+    textarea { resize: vertical; min-height: 70px; }
+
+    input[type=color] {
+      padding: 0.2rem;
+      width: 100%;
+      height: 36px;
+      cursor: pointer;
+    }
+
+    .form-actions { display: flex; gap: 0.5rem; margin-top: 0.25rem; }
+    .btn-save-item, .btn-cancel {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      padding: 0.4rem 0.9rem;
+      cursor: pointer;
+      border: 1px solid;
+      transition: background var(--t);
+    }
+    .btn-save-item {
+      color: var(--red);
+      border-color: rgba(200,40,30,0.4);
+      background: rgba(200,40,30,0.08);
+    }
+    .btn-save-item:hover { background: rgba(200,40,30,0.18); }
+    .btn-cancel {
+      color: var(--muted);
+      border-color: var(--border);
+      background: none;
+    }
+    .btn-cancel:hover { color: var(--text); }
+
+    /* save-to-github button */
+    #btn-push {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--red);
+      border: none;
+      border-radius: 4px;
+      padding: 0.45rem 1rem;
+      cursor: pointer;
+      transition: opacity var(--t);
+      white-space: nowrap;
+    }
+    #btn-push:hover { opacity: 0.85; }
+    #btn-push:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1.5rem 0;
+    }
+
+    /* back link */
+    .back-link {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.64rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color var(--t);
+    }
+    .back-link:hover { color: var(--red); }
+  </style>
+</head>
+<body>
+
+<!-- ── Login screen ─────────────────────────────────── -->
+<div id="screen-login">
+  <div class="login-box">
+    <h1 class="login-title">ADMIN<span style="color:var(--red);animation:blink 1s step-end infinite;display:inline-block">_</span></h1>
+    <p class="login-sub" id="login-sub">DASHBOARD EDITOR</p>
+    <p class="login-error" id="login-error"></p>
+    <div id="login-fields"></div>
+  </div>
+  <a href="index.html" class="back-link" style="margin-top:1.5rem">← back to site</a>
+</div>
+
+<!-- ── Admin shell ───────────────────────────────────── -->
+<div id="screen-admin">
+  <div class="admin-top">
+    <span class="admin-logo">ADMIN_</span>
+    <input class="inp" type="password" id="pat-input" placeholder="GitHub Personal Access Token (for saving)">
+    <button id="btn-push" disabled>Save to GitHub</button>
+    <span id="save-status"></span>
+    <a href="index.html" class="back-link">← site</a>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="books">Books</button>
+    <button class="tab-btn" data-tab="games">Games</button>
+    <button class="tab-btn" data-tab="projects">Projects</button>
+  </div>
+
+  <!-- Books -->
+  <div class="tab-panel active" id="tab-books">
+    <button class="btn-add" id="add-book">+ Add Book</button>
+    <div id="form-book"></div>
+    <div class="item-list" id="list-books"></div>
+  </div>
+
+  <!-- Games -->
+  <div class="tab-panel" id="tab-games">
+    <button class="btn-add" id="add-game">+ Add Game</button>
+    <div id="form-game"></div>
+    <div class="item-list" id="list-games"></div>
+  </div>
+
+  <!-- Projects -->
+  <div class="tab-panel" id="tab-projects">
+    <button class="btn-add" id="add-project">+ Add Project</button>
+    <div id="form-project"></div>
+    <div class="item-list" id="list-projects"></div>
+  </div>
+</div>
+
+<style>
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+</style>
+
+<script src="js/admin.js"></script>
+</body>
+</html>
