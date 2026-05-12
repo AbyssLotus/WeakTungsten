@@ -6,104 +6,77 @@
   },
   "books": [
     {
-      "title": "The Name of the Wind",
-      "author": "Patrick Rothfuss",
-      "status": "reading",
-      "progress": 45,
-      "rating": null,
-      "spineColor": "#3a2060",
-      "textColor": "#d4b4ff"
-    },
-    {
       "title": "Dune",
       "author": "Frank Herbert",
-      "status": "finished",
-      "progress": 100,
-      "rating": 5,
+      "status": "reading",
+      "progress": 3,
+      "rating": null,
       "spineColor": "#4a2a10",
       "textColor": "#ffd4a0"
     },
     {
-      "title": "Project Hail Mary",
-      "author": "Andy Weir",
-      "status": "finished",
-      "progress": 100,
-      "rating": 4,
-      "spineColor": "#0a2a3a",
-      "textColor": "#a0d4e8"
-    },
-    {
-      "title": "Snow Crash",
-      "author": "Neal Stephenson",
-      "status": "finished",
-      "progress": 100,
-      "rating": 3,
-      "spineColor": "#1a3020",
-      "textColor": "#a0e8b0"
-    },
-    {
-      "title": "The Martian",
-      "author": "Andy Weir",
-      "status": "finished",
-      "progress": 100,
-      "rating": 5,
-      "spineColor": "#3a1010",
-      "textColor": "#e8a0a0"
-    },
-    {
       "title": "Neuromancer",
       "author": "William Gibson",
-      "status": "finished",
-      "progress": 100,
-      "rating": 4,
+      "status": "reading",
+      "progress": 10,
+      "rating": null,
       "spineColor": "#101a3a",
       "textColor": "#a0b4ff"
-    },
-    {
-      "title": "Flowers for Algernon",
-      "author": "Daniel Keyes",
-      "status": "finished",
-      "progress": 100,
-      "rating": 2,
-      "spineColor": "#2a2a1a",
-      "textColor": "#e8e0a0"
     }
   ],
   "games": [
     {
       "title": "Elden Ring",
       "platform": "PC",
-      "status": "playing",
-      "hours": 87,
-      "notes": "Finally made it to Farum Azula"
+      "status": "dropped",
+      "hours": 59,
+      "notes": "Just was not for me"
     },
     {
       "title": "Hollow Knight",
-      "platform": "Switch",
+      "platform": "PC",
       "status": "paused",
-      "hours": 23,
-      "notes": null
+      "hours": 8,
+      "notes": "want to play but not by myself."
     },
     {
       "title": "Baldur's Gate 3",
       "platform": "PC",
-      "status": "finished",
-      "hours": 142,
+      "status": "playing",
+      "hours": 71,
       "notes": "Peak RPG. No notes."
     },
     {
-      "title": "Hades",
+      "title": "Star Citizen",
       "platform": "PC",
-      "status": "finished",
-      "hours": 68,
-      "notes": "Cleared it. Will return."
+      "status": "playing",
+      "hours": 150,
+      "notes": "IronClad..."
+    },
+    {
+      "title": "Destiny 2",
+      "platform": "PC",
+      "status": "dropped",
+      "hours": 728,
+      "notes": "that's 728 hours on PC alone. that does not include my multiple completions of the red war campaign and year 1/2 DLCs on PS4."
+    },
+    {
+      "title": "Risk Of Rain",
+      "platform": "PC",
+      "status": "playing",
+      "hours": 45.6,
+      "notes": "Very Rainy"
     }
   ],
   "projects": [
     {
       "name": "SeaWeed League",
       "description": "A fake collegiate sports league. Two universities built so far — Shrimple (Drexel parody) and LIT (MIT parody). Full dashboards, auth, and campus pages.",
-      "tech": ["HTML", "CSS", "JavaScript"],
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ],
       "url": null,
       "repo": null,
       "status": "active"
@@ -111,7 +84,23 @@
     {
       "name": "Personal Dashboard",
       "description": "This site. A Y2K pastel cyberpunk dashboard tracking what I'm reading, playing, and building. Hand-edited JSON, zero dependencies.",
-      "tech": ["HTML", "CSS", "JavaScript"],
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ],
+      "url": null,
+      "repo": null,
+      "status": "active"
+    },
+    {
+      "name": "Yggy D&D world",
+      "description": "A homebrew D&D 5e world built in Obsidian, documenting the Yggdrasil setting across 25 nations, 11 playable species, and a growing archive of historical events. Campaigns are run as drop-in sessions with living canon — completed campaigns permanently shape the world for every game that follows.",
+      "tech": [
+        "English",
+        "MarkDown",
+        "Obsidian"
+      ],
       "url": null,
       "repo": null,
       "status": "active"
