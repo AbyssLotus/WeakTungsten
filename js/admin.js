@@ -233,7 +233,7 @@ function renderBooks() {
 function showBookForm(index) {
   const book = index !== null ? draft.books[index] : {
     title: '', author: '', status: 'reading', progress: 0,
-    rating: null, spineColor: '#2a1a3a', textColor: '#e0d0f0'
+    rating: null, genre: '', notes: '', spineColor: '#2a1a3a', textColor: '#e0d0f0'
   };
   const container = document.getElementById('form-book');
   container.innerHTML = `
@@ -266,12 +266,20 @@ function showBookForm(index) {
           </select>
         </div>
         <div class="form-field">
+          <label>Genre (optional)</label>
+          <input type="text" id="b-genre" value="${esc(book.genre || '')}" placeholder="Fantasy, Sci-Fi…">
+        </div>
+        <div class="form-field">
           <label>Spine Color</label>
           <input type="color" id="b-spine" value="${book.spineColor || '#2a1a3a'}">
         </div>
         <div class="form-field">
           <label>Text Color</label>
           <input type="color" id="b-text" value="${book.textColor || '#e0d0f0'}">
+        </div>
+        <div class="form-field" style="grid-column:1/-1">
+          <label>Notes (shown in book panel)</label>
+          <textarea id="b-notes" placeholder="Your thoughts on this book…">${esc(book.notes || '')}</textarea>
         </div>
       </div>
       <div class="form-actions">
@@ -300,6 +308,8 @@ function showBookForm(index) {
       status:     document.getElementById('b-status').value,
       progress:   +document.getElementById('b-progress').value || 0,
       rating:     +document.getElementById('b-rating').value   || null,
+      genre:      document.getElementById('b-genre').value.trim() || null,
+      notes:      document.getElementById('b-notes').value.trim() || null,
       spineColor: document.getElementById('b-spine').value,
       textColor:  document.getElementById('b-text').value,
     };

@@ -75,143 +75,197 @@ function initPillWave(card) {
   });
 }
 
-/* ── Shelf hover (lean + plank glow) ─────────────────── */
-function initShelf(shelf, plank) {
-  const books = Array.from(shelf.querySelectorAll('.book'));
-  const glow  = plank.querySelector('.plank-glow');
+/* ── Open-book panel (singleton) ────────────────────── */
+let bopCloseTimer = null;
 
-  books.forEach((book, i) => {
-    book.addEventListener('mouseenter', () => {
-      book.style.transform = 'translateY(-2rem)';
-      book.style.boxShadow = `0 0 16px ${book.style.background}99, 0 -6px 20px ${book.style.background}44`;
+function initBookPanel() {
+  const backdrop = document.createElement('div');
+  backdrop.id = 'book-backdrop';
+  document.body.appendChild(backdrop);
 
-      [-2, -1, 1, 2].forEach(d => {
-        const nb = books[i + d];
-        if (nb) nb.style.transform = `rotate(${d < 0 ? -(2.5 / Math.abs(d)) : 2.5 / Math.abs(d)}deg)`;
-      });
+  const panel = document.createElement('div');
+  panel.id = 'book-open-panel';
+  panel.style.position = 'fixed';
+  panel.innerHTML = `
+    <button class="bop-close" id="bop-close">✕</button>
+    <div class="bop-cover" id="bop-cover">
+      <div class="bop-pages">
+        <div class="bop-left"  id="bop-left"></div>
+        <div class="bop-binding"></div>
+        <div class="bop-right" id="bop-right"></div>
+      </div>
+    </div>`;
+  document.body.appendChild(panel);
 
-      const br = book.getBoundingClientRect();
-      const sr = shelf.getBoundingClientRect();
-      const cx = br.left - sr.left + br.width / 2;
-      glow.style.left  = `${cx - 24}px`;
-      glow.style.width = `${br.width + 48}px`;
-      plank.classList.add('lit');
-    });
+  function close() {
+    panel.classList.remove('visible');
+    backdrop.classList.remove('visible');
+  }
 
-    book.addEventListener('mouseleave', () => {
-      book.style.transform = '';
-      book.style.boxShadow = '';
-      books.forEach(b => { if (b !== book) b.style.transform = ''; });
-      plank.classList.remove('lit');
+  backdrop.addEventListener('click', close);
+  document.getElementById('bop-close').addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+  // keep panel open while mouse is over it
+  panel.addEventListener('mouseenter', () => clearTimeout(bopCloseTimer));
+  panel.addEventListener('mouseleave', () => {
+    bopCloseTimer = setTimeout(close, 220);
+  });
+}
+
+function openBookPanel(book) {
+  clearTimeout(bopCloseTimer);
+
+  const panel   = document.getElementById('book-open-panel');
+  const cover   = document.getElementById('bop-cover');
+  const left    = document.getElementById('bop-left');
+  const right   = document.getElementById('bop-right');
+  const backdrop = document.getElementById('book-backdrop');
+
+  const color    = book.spineColor || '#3a2060';
+  const progress = book.status === 'reading' ? (book.progress ?? 0) : 100;
+  const rInfo    = book.rating ? RATING[book.rating] : null;
+
+  // update CSS custom property for cover color
+  cover.style.setProperty('--bop-color', color);
+  document.getElementById('bop-cover').style.borderColor = color;
+  document.querySelectorAll('.bop-binding::before, .bop-binding::after')
+    .forEach(el => el.style.background = color);
+
+  // stars HTML
+  const stars = book.rating
+    ? `<span class="bop-stars">${'★'.repeat(book.rating)}<span class="empty">${'★'.repeat(5 - book.rating)}</span></span>`
+    : book.status === 'reading'
+      ? `<span class="bop-stars" style="color:#8a7860;font-size:0.7rem;letter-spacing:0.1em">IN PROGRESS</span>`
+      : '';
+
+  // LEFT page
+  left.innerHTML = `
+    ${book.genre ? `<p class="bop-genre">${esc(book.genre)}</p>` : ''}
+    <h2 class="bop-title">${esc(book.title)}</h2>
+    <p class="bop-author">by ${esc(book.author)}</p>
+    ${stars}
+    ${book.notes
+      ? `<p class="bop-note">${esc(book.notes)}</p>`
+      : `<p class="bop-no-note">No notes yet.</p>`}
+  `;
+
+  // RIGHT page
+  const statusLabel = book.status.charAt(0).toUpperCase() + book.status.slice(1);
+  const statusColor = book.status === 'reading' ? '#cc2820'
+    : book.status === 'finished' ? '#5aaa6a' : '#b09060';
+
+  right.innerHTML = `
+    <div class="bop-stat">
+      <span class="bop-stat-label">Status</span>
+      <span class="bop-stat-value" style="color:${statusColor}">${statusLabel}</span>
+    </div>
+    ${book.status === 'reading' ? `
+      <div class="bop-stat">
+        <span class="bop-stat-label">Progress</span>
+        <span class="bop-stat-value">${progress}%</span>
+        <div class="bop-progress-track">
+          <div class="bop-progress-fill" style="background:${color};width:0%"></div>
+        </div>
+      </div>` : ''}
+    ${rInfo ? `
+      <div class="bop-stat">
+        <span class="bop-stat-label">Rating</span>
+        <span class="bop-stat-value" style="color:${rInfo.color}">${rInfo.label}</span>
+      </div>` : ''}
+    ${book.genre ? `
+      <div class="bop-stat">
+        <span class="bop-stat-label">Genre</span>
+        <span class="bop-stat-value">${esc(book.genre)}</span>
+      </div>` : ''}
+  `;
+
+  backdrop.classList.add('visible');
+  panel.classList.add('visible');
+
+  // animate progress bar after visible
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const fill = right.querySelector('.bop-progress-fill');
+      if (fill) fill.style.width = `${progress}%`;
     });
   });
 }
 
-/* ── Build a book element ────────────────────────────── */
+function closeBookPanel() {
+  bopCloseTimer = setTimeout(() => {
+    const panel    = document.getElementById('book-open-panel');
+    const backdrop = document.getElementById('book-backdrop');
+    if (panel)    panel.classList.remove('visible');
+    if (backdrop) backdrop.classList.remove('visible');
+  }, 200);
+}
+
+/* ── Shelf hover (lean + plank glow + open book) ────── */
+function initShelf(shelf, plank, bookData) {
+  const bookEls = Array.from(shelf.querySelectorAll('.book'));
+  const glow    = plank.querySelector('.plank-glow');
+
+  bookEls.forEach((el, i) => {
+    const book = bookData[i];
+
+    el.addEventListener('mouseenter', () => {
+      clearTimeout(bopCloseTimer);
+
+      // pop up
+      el.style.transform  = 'translateY(-2rem)';
+      el.style.boxShadow  = `0 0 18px ${book.spineColor}99, 0 -6px 22px ${book.spineColor}44`;
+
+      // lean neighbors
+      [-2, -1, 1, 2].forEach(d => {
+        const nb = bookEls[i + d];
+        if (nb) nb.style.transform = `rotate(${d < 0 ? -(2.5 / Math.abs(d)) : 2.5 / Math.abs(d)}deg)`;
+      });
+
+      // plank glow
+      const br = el.getBoundingClientRect();
+      const sr = shelf.getBoundingClientRect();
+      glow.style.left  = `${br.left - sr.left + br.width / 2 - 24}px`;
+      glow.style.width = `${br.width + 48}px`;
+      plank.classList.add('lit');
+
+      // open book panel
+      openBookPanel(book);
+    });
+
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = '';
+      el.style.boxShadow = '';
+      bookEls.forEach(b => { if (b !== el) b.style.transform = ''; });
+      plank.classList.remove('lit');
+      closeBookPanel();
+    });
+  });
+}
+
+/* ── Build a book spine element ──────────────────────── */
 function buildBook(book) {
   const { h, w } = bookDims(book.title);
-  const band     = book.status === 'finished' && book.rating ? RATING[book.rating]?.color : null;
-  const progress = book.status === 'reading'  ? (book.progress ?? 0) : 100;
+  const band      = book.status === 'finished' && book.rating ? RATING[book.rating]?.color : null;
+  const progress  = book.status === 'reading' ? (book.progress ?? 0) : 100;
 
   const el = document.createElement('div');
   el.className = `book ${book.status}`;
   el.style.cssText = `width:${w}px;height:${h}px;background:${book.spineColor};--progress:${progress}%`;
 
   el.innerHTML = `
-    ${band ? `<div class="book-band" style="background:${band}"></div>` : ''}
-    <div class="book-label-text">
-      <span style="color:${book.textColor}">${esc(book.title)}</span>
-    </div>
-    <div class="book-progress"><div class="book-progress-fill"></div></div>
-    <div class="book-tip">
-      <span class="tip-title">${esc(book.title)}</span>
-      <span class="tip-author">${esc(book.author)}</span>
-      ${book.status === 'reading' ? `<span class="tip-extra" style="color:var(--amber)">${progress}% through</span>` : ''}
-      ${band ? `<span class="tip-extra" style="color:${band}">${'★'.repeat(book.rating)}${'☆'.repeat(5 - book.rating)}</span>` : ''}
-    </div>
-  `;
+    <div class="book-inner">
+      ${band ? `<div class="book-band" style="background:${band}"></div>` : ''}
+      <div class="book-label-text">
+        <span style="color:${book.textColor}">${esc(book.title)}</span>
+      </div>
+      <div class="book-progress"><div class="book-progress-fill"></div></div>
+    </div>`;
+
   return el;
 }
 
-/* ── Scroll observers ────────────────────────────────── */
-function initObservers() {
-  // book drop-in
-  const shelfObs = new IntersectionObserver(entries => {
-    entries.forEach(({ target, isIntersecting }) => {
-      if (!isIntersecting) return;
-      target.querySelectorAll('.book').forEach((b, i) => {
-        setTimeout(() => b.classList.add('dropped'), i * 50);
-      });
-      shelfObs.unobserve(target);
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.bookshelf').forEach(s => shelfObs.observe(s));
-
-  // card slide-in
-  const cardObs = new IntersectionObserver(entries => {
-    entries.forEach(({ target, isIntersecting }) => {
-      if (!isIntersecting) return;
-      target.querySelectorAll('.card').forEach((c, i) => {
-        setTimeout(() => c.classList.add('visible'), i * 90);
-      });
-      cardObs.unobserve(target);
-    });
-  }, { threshold: 0.08 });
-
-  document.querySelectorAll('.card-grid').forEach(g => cardObs.observe(g));
-}
-
-/* ── Typewriter ──────────────────────────────────────── */
-function typewriter(el, text, delay = 800, speed = 52) {
-  let i = 0;
-  function type() {
-    el.innerHTML = esc(text.slice(0, i)) + '<span class="typewriter-caret"></span>';
-    if (i++ <= text.length) setTimeout(type, speed + Math.random() * 30);
-  }
-  setTimeout(type, delay);
-}
-
-/* ── Page: Home ──────────────────────────────────────── */
-function renderHome(data) {
-  const { about, books, games, projects } = data;
-
-  document.getElementById('hero-name').textContent = about.name;
-  document.getElementById('hero-bio').textContent  = about.bio;
-  typewriter(document.getElementById('hero-tagline'), about.tagline);
-  document.title = about.name;
-
-  const reading = (books   || []).filter(b => b.status === 'reading');
-  const playing = (games   || []).filter(g => g.status === 'playing');
-  const active  = (projects|| []).filter(p => p.status === 'active');
-
-  const currentBook    = reading[0]  || null;
-  const currentGame    = playing[0]  || null;
-  const currentProject = active[0]   || null;
-
-  document.getElementById('status-cards').innerHTML = `
-    <a href="books.html" class="status-card">
-      <span class="status-card-label">Reading</span>
-      <span class="status-card-main">${currentBook ? esc(currentBook.title) : 'Nothing on the shelf right now'}</span>
-      <span class="status-card-sub">${currentBook ? `by ${esc(currentBook.author)} · ${currentBook.progress ?? 0}% through` : '—'}</span>
-      <span class="status-card-link">Browse all <span class="arrow">→</span></span>
-    </a>
-    <a href="games.html" class="status-card">
-      <span class="status-card-label">Playing</span>
-      <span class="status-card-main">${currentGame ? esc(currentGame.title) : 'On a break'}</span>
-      <span class="status-card-sub">${currentGame ? `${esc(currentGame.platform)} · ${currentGame.hours ?? 0} hrs` : '—'}</span>
-      <span class="status-card-link">Browse all <span class="arrow">→</span></span>
-    </a>
-    <a href="projects.html" class="status-card">
-      <span class="status-card-label">Building</span>
-      <span class="status-card-main">${currentProject ? esc(currentProject.name) : 'Between projects'}</span>
-      <span class="status-card-sub">${active.length} active project${active.length !== 1 ? 's' : ''}</span>
-      <span class="status-card-link">Browse all <span class="arrow">→</span></span>
-    </a>
-  `;
-}
-
-/* ── Page: Books ─────────────────────────────────────── */
+/* ── Render bookshelf ────────────────────────────────── */
 function renderBooks(books) {
   const reading  = books.filter(b => b.status === 'reading');
   const finished = books.filter(b => b.status === 'finished');
@@ -227,24 +281,21 @@ function renderBooks(books) {
   reading.forEach(b  => shelfR.appendChild(buildBook(b)));
   finished.forEach(b => shelfF.appendChild(buildBook(b)));
 
-  initShelf(shelfR, plankR);
-  initShelf(shelfF, plankF);
+  initShelf(shelfR, plankR, reading);
+  initShelf(shelfF, plankF, finished);
 
   // rating legend
-  const legend = document.getElementById('rating-legend');
-  legend.innerHTML = Object.entries(RATING).reverse().map(([, v]) => `
-    <span class="legend-item">
-      <span class="legend-swatch" style="background:${v.color}"></span>
-      <span>${v.label}</span>
-    </span>
-  `).join('');
+  document.getElementById('rating-legend').innerHTML =
+    Object.entries(RATING).reverse().map(([, v]) => `
+      <span class="legend-item">
+        <span class="legend-swatch" style="background:${v.color}"></span>
+        <span>${v.label}</span>
+      </span>`).join('');
 }
 
-/* ── Page: Games ─────────────────────────────────────── */
+/* ── Render games ────────────────────────────────────── */
 function renderGames(games) {
   const playing = games.filter(g => g.status === 'playing');
-  const other   = games.filter(g => g.status !== 'playing');
-
   document.getElementById('page-meta').textContent =
     `${games.length} total · ${playing.length} active`;
 
@@ -263,8 +314,7 @@ function renderGames(games) {
         <span class="status-dot" style="background:${sc}"></span>${game.status}
       </span>
       <p class="game-hours"><strong>${game.hours ?? 0}</strong> hrs</p>
-      ${game.notes ? `<p class="game-notes">${esc(game.notes)}</p>` : ''}
-    `;
+      ${game.notes ? `<p class="game-notes">${esc(game.notes)}</p>` : ''}`;
     initTilt(card);
     return card;
   }
@@ -272,16 +322,16 @@ function renderGames(games) {
   const gridPlaying = document.getElementById('grid-playing');
   const gridOther   = document.getElementById('grid-other');
   const blockOther  = document.getElementById('block-other');
+  const other       = games.filter(g => g.status !== 'playing');
 
   playing.forEach(g => gridPlaying.appendChild(buildGameCard(g)));
-
   if (other.length) {
     blockOther.style.display = '';
     other.forEach(g => gridOther.appendChild(buildGameCard(g)));
   }
 }
 
-/* ── Page: Projects ──────────────────────────────────── */
+/* ── Render projects ─────────────────────────────────── */
 function renderProjects(projects) {
   const active = projects.filter(p => p.status === 'active');
   const done   = projects.filter(p => p.status !== 'active');
@@ -307,8 +357,7 @@ function renderProjects(projects) {
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Live</a>` : ''}
           ${proj.repo ? `<a class="project-link" href="${proj.repo}" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>Repo</a>` : ''}
-        </div>` : ''}
-    `;
+        </div>` : ''}`;
     initTilt(card);
     initPillWave(card);
     return card;
@@ -319,11 +368,79 @@ function renderProjects(projects) {
   const blockDone  = document.getElementById('block-done');
 
   active.forEach(p => gridActive.appendChild(buildProjectCard(p)));
-
   if (done.length) {
     blockDone.style.display = '';
     done.forEach(p => gridDone.appendChild(buildProjectCard(p)));
   }
+}
+
+/* ── Render home ─────────────────────────────────────── */
+function renderHome(data) {
+  const { about, books, games, projects } = data;
+
+  document.getElementById('hero-name').textContent = about.name;
+  document.getElementById('hero-bio').textContent  = about.bio;
+  typewriter(document.getElementById('hero-tagline'), about.tagline);
+  document.title = about.name;
+
+  const reading = (books    || []).filter(b => b.status === 'reading');
+  const playing = (games    || []).filter(g => g.status === 'playing');
+  const active  = (projects || []).filter(p => p.status === 'active');
+
+  document.getElementById('status-cards').innerHTML = `
+    <a href="books.html" class="status-card">
+      <span class="status-card-label">Reading</span>
+      <span class="status-card-main">${reading[0] ? esc(reading[0].title) : 'Nothing on the shelf right now'}</span>
+      <span class="status-card-sub">${reading[0] ? `by ${esc(reading[0].author)} · ${reading[0].progress ?? 0}% through` : '—'}</span>
+      <span class="status-card-link">Browse all <span class="arrow">→</span></span>
+    </a>
+    <a href="games.html" class="status-card">
+      <span class="status-card-label">Playing</span>
+      <span class="status-card-main">${playing[0] ? esc(playing[0].title) : 'On a break'}</span>
+      <span class="status-card-sub">${playing[0] ? `${esc(playing[0].platform)} · ${playing[0].hours ?? 0} hrs` : '—'}</span>
+      <span class="status-card-link">Browse all <span class="arrow">→</span></span>
+    </a>
+    <a href="projects.html" class="status-card">
+      <span class="status-card-label">Building</span>
+      <span class="status-card-main">${active[0] ? esc(active[0].name) : 'Between projects'}</span>
+      <span class="status-card-sub">${active.length} active project${active.length !== 1 ? 's' : ''}</span>
+      <span class="status-card-link">Browse all <span class="arrow">→</span></span>
+    </a>`;
+}
+
+/* ── Scroll observers ────────────────────────────────── */
+function initObservers() {
+  const shelfObs = new IntersectionObserver(entries => {
+    entries.forEach(({ target, isIntersecting }) => {
+      if (!isIntersecting) return;
+      target.querySelectorAll('.book').forEach((b, i) => {
+        setTimeout(() => b.classList.add('dropped'), i * 50);
+      });
+      shelfObs.unobserve(target);
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.bookshelf').forEach(s => shelfObs.observe(s));
+
+  const cardObs = new IntersectionObserver(entries => {
+    entries.forEach(({ target, isIntersecting }) => {
+      if (!isIntersecting) return;
+      target.querySelectorAll('.card').forEach((c, i) => {
+        setTimeout(() => c.classList.add('visible'), i * 90);
+      });
+      cardObs.unobserve(target);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.card-grid').forEach(g => cardObs.observe(g));
+}
+
+/* ── Typewriter ──────────────────────────────────────── */
+function typewriter(el, text, delay = 800, speed = 52) {
+  let i = 0;
+  function type() {
+    el.innerHTML = esc(text.slice(0, i)) + '<span class="typewriter-caret"></span>';
+    if (i++ <= text.length) setTimeout(type, speed + Math.random() * 30);
+  }
+  setTimeout(type, delay);
 }
 
 /* ── Boot ────────────────────────────────────────────── */
@@ -332,17 +449,15 @@ async function init() {
     const res = await fetch('data.json');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-
     const page = document.body.dataset.page;
 
     if (page === 'home')     renderHome(data);
-    if (page === 'books')    renderBooks(data.books    || []);
+    if (page === 'books')  { initBookPanel(); renderBooks(data.books    || []); }
     if (page === 'games')    renderGames(data.games    || []);
     if (page === 'projects') renderProjects(data.projects || []);
 
     initObservers();
     window.dispatchEvent(new Event('content-ready'));
-
   } catch (err) {
     console.error('[dashboard] Failed to load data.json:', err);
     console.info('[dashboard] Run via a local server — try: npx serve personal-site');

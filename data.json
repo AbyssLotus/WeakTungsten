@@ -11,6 +11,8 @@
       "status": "reading",
       "progress": 45,
       "rating": null,
+      "genre": "Fantasy",
+      "notes": "Kvothe is insufferable in the best possible way.",
       "spineColor": "#3a2060",
       "textColor": "#d4b4ff"
     },
@@ -20,6 +22,8 @@
       "status": "finished",
       "progress": 100,
       "rating": 5,
+      "genre": "Sci-Fi",
+      "notes": "The spice must flow. Nothing else needs to be said.",
       "spineColor": "#4a2a10",
       "textColor": "#ffd4a0"
     },
@@ -29,6 +33,8 @@
       "status": "finished",
       "progress": 100,
       "rating": 4,
+      "genre": "Sci-Fi",
+      "notes": "Rocky was the best character in any book I've read in years.",
       "spineColor": "#0a2a3a",
       "textColor": "#a0d4e8"
     },
@@ -38,6 +44,8 @@
       "status": "finished",
       "progress": 100,
       "rating": 3,
+      "genre": "Cyberpunk",
+      "notes": "Ahead of its time, but drags in the second half.",
       "spineColor": "#1a3020",
       "textColor": "#a0e8b0"
     },
@@ -47,6 +55,8 @@
       "status": "finished",
       "progress": 100,
       "rating": 5,
+      "genre": "Sci-Fi",
+      "notes": "I will figure this out. Pure problem-solving dopamine.",
       "spineColor": "#3a1010",
       "textColor": "#e8a0a0"
     },
@@ -56,6 +66,8 @@
       "status": "finished",
       "progress": 100,
       "rating": 4,
+      "genre": "Cyberpunk",
+      "notes": "Dense but worth every page. The original.",
       "spineColor": "#101a3a",
       "textColor": "#a0b4ff"
     },
@@ -65,6 +77,8 @@
       "status": "finished",
       "progress": 100,
       "rating": 2,
+      "genre": "Literary Fiction",
+      "notes": "Emotionally brutal. Not for me.",
       "spineColor": "#2a2a1a",
       "textColor": "#e8e0a0"
     }
@@ -110,7 +124,7 @@
     },
     {
       "name": "Personal Dashboard",
-      "description": "This site. A Y2K pastel cyberpunk dashboard tracking what I'm reading, playing, and building. Hand-edited JSON, zero dependencies.",
+      "description": "This site. A solarpunk cyberpunk dashboard tracking what I'm reading, playing, and building. Hand-edited JSON, zero dependencies.",
       "tech": ["HTML", "CSS", "JavaScript"],
       "url": null,
       "repo": null,
