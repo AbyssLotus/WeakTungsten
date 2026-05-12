@@ -1,0 +1,120 @@
+{
+  "about": {
+    "name": "TRIPP",
+    "tagline": "builder of things // breaker of things",
+    "bio": "Developer and creative based somewhere with good Wi-Fi. I read books, play games, and ship things to the internet."
+  },
+  "books": [
+    {
+      "title": "The Name of the Wind",
+      "author": "Patrick Rothfuss",
+      "status": "reading",
+      "progress": 45,
+      "rating": null,
+      "spineColor": "#3a2060",
+      "textColor": "#d4b4ff"
+    },
+    {
+      "title": "Dune",
+      "author": "Frank Herbert",
+      "status": "finished",
+      "progress": 100,
+      "rating": 5,
+      "spineColor": "#4a2a10",
+      "textColor": "#ffd4a0"
+    },
+    {
+      "title": "Project Hail Mary",
+      "author": "Andy Weir",
+      "status": "finished",
+      "progress": 100,
+      "rating": 4,
+      "spineColor": "#0a2a3a",
+      "textColor": "#a0d4e8"
+    },
+    {
+      "title": "Snow Crash",
+      "author": "Neal Stephenson",
+      "status": "finished",
+      "progress": 100,
+      "rating": 3,
+      "spineColor": "#1a3020",
+      "textColor": "#a0e8b0"
+    },
+    {
+      "title": "The Martian",
+      "author": "Andy Weir",
+      "status": "finished",
+      "progress": 100,
+      "rating": 5,
+      "spineColor": "#3a1010",
+      "textColor": "#e8a0a0"
+    },
+    {
+      "title": "Neuromancer",
+      "author": "William Gibson",
+      "status": "finished",
+      "progress": 100,
+      "rating": 4,
+      "spineColor": "#101a3a",
+      "textColor": "#a0b4ff"
+    },
+    {
+      "title": "Flowers for Algernon",
+      "author": "Daniel Keyes",
+      "status": "finished",
+      "progress": 100,
+      "rating": 2,
+      "spineColor": "#2a2a1a",
+      "textColor": "#e8e0a0"
+    }
+  ],
+  "games": [
+    {
+      "title": "Elden Ring",
+      "platform": "PC",
+      "status": "playing",
+      "hours": 87,
+      "notes": "Finally made it to Farum Azula"
+    },
+    {
+      "title": "Hollow Knight",
+      "platform": "Switch",
+      "status": "paused",
+      "hours": 23,
+      "notes": null
+    },
+    {
+      "title": "Baldur's Gate 3",
+      "platform": "PC",
+      "status": "finished",
+      "hours": 142,
+      "notes": "Peak RPG. No notes."
+    },
+    {
+      "title": "Hades",
+      "platform": "PC",
+      "status": "finished",
+      "hours": 68,
+      "notes": "Cleared it. Will return."
+    }
+  ],
+  "projects": [
+    {
+      "name": "SeaWeed League",
+      "description": "A fake collegiate sports league. Two universities built so far — Shrimple (Drexel parody) and LIT (MIT parody). Full dashboards, auth, and campus pages.",
+      "tech": ["HTML", "CSS", "JavaScript"],
+      "url": null,
+      "repo": null,
+      "status": "active"
+    },
+    {
+      "name": "Personal Dashboard",
+      "description": "This site. A Y2K pastel cyberpunk dashboard tracking what I'm reading, playing, and building. Hand-edited JSON, zero dependencies.",
+      "tech": ["HTML", "CSS", "JavaScript"],
+      "url": null,
+      "repo": null,
+      "status": "active"
+    }
+  ]
+}

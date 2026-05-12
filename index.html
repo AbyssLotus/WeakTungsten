@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tripp — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <div id="cursor" aria-hidden="true"></div>
+  <div id="scroll-progress" aria-hidden="true"></div>
+
+  <nav id="nav">
+    <a href="#hero" class="nav-logo">TRIPP<span class="nav-logo-blink">_</span></a>
+    <div class="nav-links">
+      <a href="#books" class="nav-link">Reading</a>
+      <a href="#games" class="nav-link">Playing</a>
+      <a href="#projects" class="nav-link">Building</a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section id="hero">
+    <canvas id="star-canvas" aria-hidden="true"></canvas>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-prompt">&gt;</span>
+        <span class="eyebrow-text">WELCOME TO MY CORNER OF THE INTERNET</span>
+        <span class="eyebrow-cursor">▋</span>
+      </div>
+      <h1 class="hero-name" id="hero-name"></h1>
+      <p class="hero-tagline" id="hero-tagline"></p>
+      <p class="hero-bio" id="hero-bio"></p>
+      <div class="hero-links">
+        <a href="#books" class="hero-btn">See what I'm reading</a>
+      </div>
+    </div>
+    <div class="scroll-hint" aria-hidden="true">
+      <span>scroll</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ── BOOKS ── -->
+  <section id="books">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2 class="section-title">Currently Reading</h2>
+        <p class="section-meta" id="reading-meta"></p>
+      </div>
+      <div class="shelf-wrap">
+        <div class="bookshelf" id="bookshelf-reading"></div>
+        <div class="shelf-plank" id="shelf-reading-plank">
+          <div class="plank-glow"></div>
+        </div>
+      </div>
+
+      <div class="section-header" style="margin-top: 5rem;">
+        <h2 class="section-title">Finished</h2>
+        <div class="rating-legend" id="rating-legend"></div>
+      </div>
+      <div class="shelf-wrap">
+        <div class="bookshelf" id="bookshelf-finished"></div>
+        <div class="shelf-plank" id="shelf-finished-plank">
+          <div class="plank-glow"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GAMES ── -->
+  <section id="games">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2 class="section-title">Currently Playing</h2>
+        <p class="section-meta" id="games-meta"></p>
+      </div>
+      <div class="card-grid" id="games-grid"></div>
+    </div>
+  </section>
+
+  <!-- ── PROJECTS ── -->
+  <section id="projects">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2 class="section-title">Building</h2>
+        <p class="section-meta" id="projects-meta"></p>
+      </div>
+      <div class="card-grid" id="projects-grid"></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-sig">Edited by hand. Built with care.</span>
+      <span class="footer-dot">◆</span>
+      <span class="footer-date" id="footer-date"></span>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
